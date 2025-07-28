@@ -10,6 +10,8 @@ import Login from './pages/Login.tsx';
 import Signup from './pages/Signup.tsx';
 import ForgotPassword from './pages/ForgotPassword.tsx';
 import Profile from './pages/Profile.tsx';
+import UserPage from './pages/UserPage.tsx';
+import NotFoundPage from './pages/NotFound.tsx';
 
 
 const router = createBrowserRouter([
@@ -30,11 +32,18 @@ const router = createBrowserRouter([
         path: "forgot-password",
         element: <ForgotPassword title="Forgot Password" />
       }, {
+        path: "profile",
+        element: <Profile title="Edit Profile" />
+      }, {
         path: "user/:username",
-        element: <Profile title="User Profile" />
+        element: <UserPage title="User Profile" />
+      }, {
+        path: "*",
+        element: <NotFoundPage />
       }
     ]
-  }
+  },
+
 ]);
 
 createRoot(document.getElementById('root')!).render(

@@ -8,6 +8,7 @@ import LoginImage from "/login.png";
 import axiosInstance from "../config/axiosConfig";
 import usePageSetup from "../hooks/usePageSetup";
 import type { titleProp } from "../types";
+import GoogleBox from "../components/GoogleBox";
 
 export const isValidEmail = (email: string) => {
     return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
@@ -67,12 +68,12 @@ export default function Login({ title }: titleProp) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row justify-center items-center  min-h-screen gap-8">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start md:mt-16  min-h-screen m-2 gap-8">
             <div className="h-[60vh] hidden md:block">
                 <img src={LoginImage} className="h-full" alt="" />
             </div>
             <div className="flex flex-col  w-full sm:w-md px-10 py-5 rounded-3xl h-100">
-                <h1 className="text-3xl text-center font-[cursive]">TJ Social Login</h1>
+                <h1 className="text-3xl text-center ">TJ Social Login</h1>
                 <form className="flex flex-col justify-start" action="" method="get" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email" className="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white">Your Email</label>
@@ -116,6 +117,9 @@ export default function Login({ title }: titleProp) {
                             `Sign In`  // Default text when not loading
                         )}
                     </button>
+                    <div className="mt-5">
+                        <GoogleBox setIsLoading={setIsLoading} />
+                    </div>
                 </form>
 
                 <div className="flex items-center w-full my-4">

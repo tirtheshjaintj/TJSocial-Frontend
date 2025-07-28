@@ -108,12 +108,12 @@ export default function ForgotPassword({ title }: titleProp) {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row justify-center items-center  min-h-screen  gap-8">
+            <div className="flex flex-col md:flex-row justify-center items-center md:items-start md:mt-16  min-h-screen m-2 gap-8">
                 <div className="h-[60vh] hidden md:block">
                     <img src={LoginImage} className="h-full" alt="" />
                 </div>
                 <div className="flex flex-col sm:w-md px-10 py-5 rounded-3xl h-100 justify-start w-full">
-                    <h1 className="text-3xl text-center font-[cursive]">TJ Social Change Password</h1>
+                    <h1 className="text-3xl text-center">TJ Social Change Password</h1>
 
                     <form className="flex flex-col justify-start" method="get" onSubmit={handleSubmit}>
 
@@ -205,7 +205,7 @@ export default function ForgotPassword({ title }: titleProp) {
                                     <button
                                         onClick={resendOTP}
                                         disabled={resendDisabled || isLoading} // Disable the button during loading
-                                        className={`text-sm text-primary-600 ${(resendDisabled || isLoading) ? 'cursor-not-allowed' : 'hover:underline'}`}>
+                                        className={`text-sm text-primary-600 ${(resendDisabled || isLoading) ? 'cursor-not-allowed' : 'cursor-pointer hover:underline'}`}>
                                         {(resendDisabled || isLoading) ? "Wait To" : "Now"} Resend OTP
                                     </button>
                                     {resendDisabled && (

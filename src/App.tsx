@@ -22,12 +22,14 @@ export default function App() {
   }
   useEffect(() => {
     getUser();
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
   }, []);
   return (
     <>
-      <Navbar />
-
       <Background>
+        <Navbar />
         <Outlet />
         <ToastContainer position="bottom-right" transition={Bounce} limit={3} autoClose={2000} />
         <ModeBall />

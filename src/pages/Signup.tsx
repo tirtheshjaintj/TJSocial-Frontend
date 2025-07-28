@@ -98,6 +98,7 @@ export default function Signup({ title }: titleProp) {
         }
 
     }
+
     useEffect(() => {
         if (user) navigate("/");
     }, [user]);
@@ -144,8 +145,6 @@ export default function Signup({ title }: titleProp) {
                 try {
 
                     const response = await axiosInstance.post("user/username", { username });
-                    console.log(response);
-                    console.log(username, response.data.data);
                     if (username == response.data.data) {
                         setUsernameValid(true);
                     }
@@ -227,12 +226,12 @@ export default function Signup({ title }: titleProp) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row justify-center items-center  min-h-screen m-2 gap-8">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start md:mt-16  min-h-screen m-2 gap-8">
             <div className="h-[60vh] hidden md:block">
                 <img src={LoginImage} className="h-full" alt="" />
             </div>
             <div className="flex flex-col  w-full sm:w-md px-10 py-5 rounded-3xl h-100">
-                <h1 className="text-3xl text-center font-[cursive]">TJ Social Signup</h1>
+                <h1 className="text-3xl text-center">TJ Social Signup</h1>
                 <form className="flex flex-col justify-start" action="" method="get" onSubmit={handleSubmit}>
 
                     {(phase == 1) && <>
@@ -333,7 +332,7 @@ export default function Signup({ title }: titleProp) {
                             <button
                                 onClick={resendOTP}
                                 disabled={resendDisabled || isLoading} // Disable the button during loading
-                                className={`text-sm text-primary-600 ${(resendDisabled || isLoading) ? 'cursor-not-allowed' : 'hover:underline'}`}>
+                                className={`text-sm text-primary-600 ${(resendDisabled || isLoading) ? 'cursor-not-allowed' : 'cursor-pointer hover:underline'}`}>
                                 {(resendDisabled || isLoading) ? "Wait To" : "Now"} Resend OTP
                             </button>
                             {resendDisabled && (

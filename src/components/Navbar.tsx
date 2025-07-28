@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaDownload, FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,13 +17,16 @@ export default function AppNavbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
+
         const handleBeforeInstallPrompt = (e: any) => {
             e.preventDefault();
             deferredPrompt = e;
+            console.log(isInstallable);
             setIsInstallable(true);
         };
 
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
         return () => {
             window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
         };
@@ -64,7 +67,7 @@ export default function AppNavbar() {
 
     return (
         <motion.div
-            className="w-full sticky top-0 z-50 shadow-md backdrop-blur-xl cursor-pointer bg-white/50 dark:bg-gray-900/50 px-4 md:px-8 py-3 flex items-center justify-between"
+            className="w-full sticky z-10  top-0 shadow-md backdrop-blur-xl cursor-pointer bg-white/50 dark:bg-gray-900/50 px-4 md:px-8 py-3 flex items-center justify-between"
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
@@ -79,19 +82,17 @@ export default function AppNavbar() {
                     tabIndex={0}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     onBlur={() => setDropdownOpen(false)}
-                    className="relative"
+                    style={{
+                        backgroundImage: `url(${user?.profile_pic || '/profile-default.webp'})`,
+                    }}
+                    className="relative w-11 h-11  bg-cover bg-no-repeat rounded-[100%]"
                 >
-                    <img
-                        src={user?.profile_pic || "/profile-default.webp"}
-                        alt="Profile"
-                        className="w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-gray-300 hover:ring-2 hover:ring-blue-400 transition"
-                    />
                 </div>
 
                 <AnimatePresence>
                     {dropdownOpen && (
                         <motion.div
-                            className="absolute right-0 mt-4 w-48 bg-white/80 dark:bg-gray-800/80 rounded-xl shadow-xl overflow-hidden z-50"
+                            className="absolute right-0 mt-4 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden z-[50]"
                             initial={{ opacity: 0, scale: 0.9, y: -10 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -105,8 +106,11 @@ export default function AppNavbar() {
                                 </div>
                             ) : (
                                 <div className="flex flex-col text-sm text-gray-800 dark:text-gray-200" title={user?.name}>
+                                    <Link to={`/profile`} className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        Edit Profile
+                                    </Link>
                                     <Link to={`/user/${user.username}`} className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        Profile @{user.username}
+                                        View @{user.username}
                                     </Link>
                                     <hr className="opacity-20" />
                                     <button onClick={signOut} className="px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 w-full cursor-pointer">

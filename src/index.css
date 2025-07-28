@@ -1,31 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap");
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 @custom-variant dark (&:where(.dark, .dark *));
-::-webkit-scrollbar {
-  width: 8px;  /* Width of the scrollbar */
-  height: 8px; /* Height for horizontal scrollbars */
+
+body {
+  font-family: "Winky Rough", sans-serif;
+  font-optical-sizing: auto;
 }
 
-::-webkit-scrollbar-track {
-  background: #1f2937; /* Track color (gray-800) */
-  border-radius: 10px; /* Rounded track corners */
+/* Global scrollbar style (only for body) */
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: #1f2937;
+  border-radius: 10px;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 1);
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #4b5563; /* Thumb color (gray-600) */
-  border-radius: 10px; /* Rounded scrollbar corners */
-  border: 2px solid transparent; /* Adds space around the scrollbar thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #9ca3af; /* Thumb hover color (gray-400) */
-}
-
-/* For Firefox */
-* {
+*{
   scrollbar-width: thin;
-  scrollbar-color: #4b5563 #1f2937; /* Thumb color, Track color */
+  scrollbar-color: #4b5563 #1f2937;
   scroll-behavior: smooth;
+  transition: scale 1s;
 }
+
+/* Use this on your carousel container */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
 .float{
 	position:fixed;
 	width:40px;
