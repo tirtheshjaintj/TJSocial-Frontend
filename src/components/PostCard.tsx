@@ -37,7 +37,6 @@ function PostCard({ post, onDelete, innerRef, index, onEdit }: PostCardProps) {
     const [liked, setLiked] = useState(post.liked);
     const [bookmarked, setBookmarked] = useState(post.bookmarked || false);
     const [likeCount, setLikeCount] = useState(post.like_count);
-    const [followed, setFollowed] = useState(post.followed || false);
     const user = useSelector((state: any) => state.user);
 
     const handleDelete = async () => {
@@ -89,16 +88,7 @@ function PostCard({ post, onDelete, innerRef, index, onEdit }: PostCardProps) {
         }
     };
 
-    const handleFollow = async () => {
-        try {
-            const response = await axiosInstance.post(`/follow/${post.user_id._id}`);
-            toast.success(response.data.message);
-            setFollowed(response.data.data);
-        } catch (error: any) {
-            toast.error(error.response.data.message);
-            console.log(error);
-        }
-    }
+ 
 
 
     return (
