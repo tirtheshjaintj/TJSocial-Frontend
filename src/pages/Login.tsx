@@ -47,6 +47,7 @@ export default function Login({ title }: titleProp) {
             const data = response.data;
             dispatch(addUser(data.data));
             toast.success("Login Successful");
+            
         } catch (error) {
             console.log(error);
             toast.error("Not valid Credentials");

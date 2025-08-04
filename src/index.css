@@ -9,6 +9,14 @@ body {
   font-optical-sizing: auto;
 }
 
+.carousel-container::-webkit-scrollbar {
+  display: none;
+}
+.carousel-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 /* Global scrollbar style (only for body) */
 body::-webkit-scrollbar {
   width: 8px;
@@ -33,15 +41,28 @@ body::-webkit-scrollbar-thumb:hover {
   scroll-behavior: smooth;
   transition: scale 1s;
 }
+/* Target any scrollable div inside Carousel */
+/* Strongest fix for Flowbite Carousel scrollbar */
+.flowbite-carousel > div::-webkit-scrollbar {
+  display: none !important;
+}
+.flowbite-carousel > div {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overflow-x: hidden !important;
+}
 
 /* Use this on your carousel container */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+/* Global CSS */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
 
 
 .float{

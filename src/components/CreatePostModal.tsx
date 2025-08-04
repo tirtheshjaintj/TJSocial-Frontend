@@ -11,18 +11,44 @@ interface UpdateProfileProps {
     open_status: boolean;
     onClose: () => void;
     post: any;
+    onUpdate?: (updatedPost: any) => void; // 👈 add this
 }
 
-function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
+function CreatePostModal({ open_status, onClose, post ,onUpdate}: UpdateProfileProps) {
     const [postDetails, setPostDetails] = useState({
         description: post?.description || "",
         hashtags: post?.hashtags || [] as string[],
-        post_type: post?.post_type || "Post",
+        post_type: post?.post_type || "post",
         status: post?.typee || "posted",
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [hashtagInput, setHashtagInput] = useState("");
+const [existingImages, setExistingImages] = useState(post?.images || []);
+
+    useEffect(() => {
+    if (post) {
+        setPostDetails({
+            description: post.description || "",
+            hashtags: post.hashtags || [],
+            post_type: post.post_type || "Post",
+            status: post.type || "posted",
+        });
+        setExistingImages(post.images || []);
+    }
+}, [post]);
+
+const deleteExistingImage = async (image_id: string) => {
+    try {
+        await axiosInstance.delete(`/post/image/${image_id}`);
+        const updated = existingImages.filter((img:any) => img._id !== image_id);
+        setExistingImages(updated);
+        toast.success("Image removed");
+    } catch (error) {
+        toast.error("Failed to delete image");
+        console.error(error);
+    }
+};
 
     const imagePreviews = useMemo(
         () => imageFiles.map((file: any) => URL.createObjectURL(file)),
@@ -35,11 +61,11 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
             toast.error("Atleast One HashTag is Needed");
             return;
         }
-        if (imageFiles.length == 0) {
+        if (!post && imageFiles.length == 0) {
             toast.error("Atleast One Image is Needed");
             return;
         }
-        if (!["Post", "Story"].includes(postDetails.post_type)) {
+        if (!["post", "story"].includes(postDetails.post_type)) {
             toast.error("Not valid Post Type");
             return;
         }
@@ -59,12 +85,22 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
                 formdata.append("images", image);
             });
             console.log(formdata);
-            const response = await axiosInstance.post("/post", formdata, {
+            let url = "/post";
+            let method = "post";
+    
+            if (post?._id) {
+                url = `/post/${post._id}`;
+                method = "patch";
+            }
+            //@ts-ignore
+            const response = await axiosInstance[method](url, formdata, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log(response);
+            if (method === "patch" && onUpdate) {
+                onUpdate(response.data.data); // 👈 updated post sent back
+            }
             setImageFiles([]);
             setPostDetails({
                 ...postDetails,
@@ -73,7 +109,7 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
                 status: "posted",
             });
             onClose();
-            toast.success("Post Published Successfully");
+            toast.success(post ? "Post Updated Successfully" : "Post Published Successfully");
         } catch (error) {
             console.error(error);
             setIsLoading(false);
@@ -89,21 +125,23 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
 
     const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
-        const images = [...imageFiles, ...files];
-        if (images.length > 10) {
-            toast.info(`You can add ${10 - imageFiles.length} more`);
+        const total = existingImages.length + imageFiles.length + files.length;
+        if (total > 10) {
+            toast.info(`You can only add ${10 - existingImages.length - imageFiles.length} more`);
             return;
         }
-        const allValidImages = images.every((file) => file.type.startsWith("image/"));
+    
+        const allValidImages = files.every((file) => file.type.startsWith("image/"));
         if (!allValidImages) {
             toast.error("Only image files are allowed.");
             e.target.value = "";
             return;
         }
-        setImageFiles(images);
+    
+        setImageFiles([...imageFiles, ...files]);
         e.target.value = "";
     };
-
+    
     const removeImage = (index: number) => {
         const updatedImages = [...imageFiles];
         updatedImages.splice(index, 1);
@@ -181,8 +219,8 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
                                 disabled={isLoading}
                                 className="w-full p-2 rounded-lg border bg-white dark:bg-gray-800 text-black dark:text-white"
                             >
-                                <option value="Post">Post</option>
-                                <option value="Story">Story</option>
+                                <option value="post">Post</option>
+                                <option value="story">Story</option>
                             </select>
                         </span>
                     </h2>
@@ -235,13 +273,30 @@ function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
                                 <FaImage className="text-4xl text-gray-500" />
                             </label>
 
+{/* Existing Images */}
+{existingImages.map((img:any, index:number) => (
+    <div key={img._id} className="relative w-full aspect-square overflow-hidden rounded-md">
+        <img
+            src={img.image_url}
+            alt={`existing-${index}`}
+            className="object-fill w-full h-full"
+        />
+        <div
+            onClick={() => deleteExistingImage(img._id)}
+            className="absolute top-1 right-1 bg-black/70 p-1 rounded-full cursor-pointer text-white z-10"
+        >
+            <FaTimes size={12} />
+        </div>
+    </div>
+))}
+
                             {/* Image Previews */}
                             {imagePreviews.map((preview, index) => (
                                 <div key={index} className="relative w-full aspect-square overflow-hidden rounded-md">
                                     <img
                                         src={preview}
                                         alt={`preview-${index}`}
-                                        className="object-cover w-full h-full"
+                                        className="object-fill w-full h-full"
                                     />
                                     <div
                                         onClick={() => removeImage(index)}

@@ -142,12 +142,12 @@ function ShowAllPosts({ post_user }: { post_user: any }) {
                             transition={{ delay: index * 0.05 }}
                         >
                             <PostCard
-                                post_user={post_user}
                                 post={post}
                                 index={index}
                                 onDelete={handleDelete}
                                 innerRef={isLastPost ? lastPostRef : undefined}
                                 onEdit={() => setEditPost(post)}
+                                
                             />
                         </motion.div>
                     );
@@ -166,7 +166,12 @@ function ShowAllPosts({ post_user }: { post_user: any }) {
                     </motion.div>
                 )}
             </motion.div>
-            <CreatePostModal open_status={(editPost) ? true : false} onClose={() => setEditPost(null)} post={editPost} />
+            <CreatePostModal open_status={(editPost) ? true : false} onClose={() => setEditPost(null)} post={editPost} onUpdate={(updatedPost:any) => {
+                                    setMyPosts((prevPosts) =>
+                                        prevPosts.map((p) => (p._id === updatedPost._id ? updatedPost : p))
+                                    );
+                                    setEditPost(null); // Close modal
+                                }}/>
         </div>
     );
 }
