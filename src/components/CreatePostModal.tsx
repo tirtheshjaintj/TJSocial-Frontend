@@ -10,14 +10,15 @@ import axiosInstance from "../config/axiosConfig";
 interface UpdateProfileProps {
     open_status: boolean;
     onClose: () => void;
+    post: any;
 }
 
-function CreatePostModal({ open_status, onClose }: UpdateProfileProps) {
+function CreatePostModal({ open_status, onClose, post }: UpdateProfileProps) {
     const [postDetails, setPostDetails] = useState({
-        description: "",
-        hashtags: [] as string[],
-        post_type: "Post",
-        status: "posted",
+        description: post?.description || "",
+        hashtags: post?.hashtags || [] as string[],
+        post_type: post?.post_type || "Post",
+        status: post?.typee || "posted",
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -168,6 +169,7 @@ function CreatePostModal({ open_status, onClose }: UpdateProfileProps) {
                 encType="multipart/form-data"
             >
                 <div>
+                    <FaTimes className="absolute right-5 text-xl cursor-pointer" onClick={onClose} />
                     <h2 className="text-gray-800 dark:text-white md:mb-4">
                         <span className="inline-flex items-center gap-2">
                             <label htmlFor="post_type" className="font-bold text-xl"> Create&nbsp;New</label>
@@ -203,7 +205,7 @@ function CreatePostModal({ open_status, onClose }: UpdateProfileProps) {
                         className="w-full p-2 mb-2 rounded-lg border bg-white dark:bg-gray-800 text-black dark:text-white"
                     />
                     <div className="flex flex-wrap gap-2">
-                        {postDetails.hashtags.map((tag, index) => (
+                        {postDetails.hashtags.map((tag: string, index: number) => (
                             <div
                                 key={index}
                                 className="flex items-center bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-white px-2 py-1 rounded-full"

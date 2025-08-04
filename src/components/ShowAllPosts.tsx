@@ -3,14 +3,18 @@ import { toast } from "react-toastify";
 import axiosInstance from "../config/axiosConfig";
 import { motion } from "framer-motion";
 import PostCard from "./PostCard";
+import { useSelector } from "react-redux";
+import CreatePostModal from "./CreatePostModal";
 
-function ShowAllPosts() {
+function ShowAllPosts({ post_user }: { post_user: any }) {
     const [isPostLoading, setIsPostLoading] = useState(false);
     const [myPosts, setMyPosts] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef<IntersectionObserver | null>(null);
     const [sortBy, setSortBy] = useState("recent");
+    const user = useSelector((state: any) => state.user);
+    const [editPost, setEditPost] = useState(null);
 
     const handleSortChange = (value: string) => {
         setSortBy(value);
@@ -20,11 +24,15 @@ function ShowAllPosts() {
         if (!hasMore) return;
         try {
             setIsPostLoading(true);
-            const response = await axiosInstance.get(`/post/mine?page=${page}`);
+            let url = `/post/user/${post_user?._id}?page=${page}`;
+            if (post_user._id == user._id) url = `/post/mine?page=${page}`;
+            console.log(url);
+            const response = await axiosInstance.get(url);
             const newPosts = response.data.data;
             setMyPosts(prev => [...prev, ...newPosts]);
             setHasMore(newPosts.length > 0);
-        } catch {
+        } catch (error: any) {
+            console.log(error);
             toast.error("Failed to fetch posts.");
         } finally {
             setIsPostLoading(false);
@@ -134,10 +142,12 @@ function ShowAllPosts() {
                             transition={{ delay: index * 0.05 }}
                         >
                             <PostCard
+                                post_user={post_user}
                                 post={post}
                                 index={index}
                                 onDelete={handleDelete}
                                 innerRef={isLastPost ? lastPostRef : undefined}
+                                onEdit={() => setEditPost(post)}
                             />
                         </motion.div>
                     );
@@ -152,13 +162,11 @@ function ShowAllPosts() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                     >
-                        You haven't posted anything yet. <br />
-                        <span className="text-blue-600 dark:text-blue-400 font-semibold">
-                            Publish new content to get started!
-                        </span>
+                        Haven't posted anything yet. <br />
                     </motion.div>
                 )}
             </motion.div>
+            <CreatePostModal open_status={(editPost) ? true : false} onClose={() => setEditPost(null)} post={editPost} />
         </div>
     );
 }

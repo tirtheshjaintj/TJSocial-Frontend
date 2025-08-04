@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaCamera, FaPencilAlt } from "react-icons/fa";
+import { FaCamera, FaPencilAlt, FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { isValidDOB } from "../pages/Signup";
@@ -185,6 +185,8 @@ function UpdateProfileModal({ open_status, onClose }: UpdateProfileProps) {
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ ease: "easeInOut" }}
             >
+                <FaTimes className="absolute right-5 text-xl cursor-pointer" onClick={onClose} />
+
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 ">
                     <span className="inline-flex items-center gap-2"> Update Profile <FaPencilAlt /></span>
                 </h2>

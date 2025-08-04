@@ -7,6 +7,7 @@ import UpdateProfileModal from "../components/UpdateProfileModal";
 import { FaPencilAlt } from "react-icons/fa";
 import CreatePostModal from "../components/CreatePostModal";
 import ShowAllPosts from "../components/ShowAllPosts";
+import CountModal from "../components/CountModal";
 
 export default function Profile({ title }: titleProp) {
     usePageSetup(title);
@@ -14,6 +15,8 @@ export default function Profile({ title }: titleProp) {
     const [loading, setLoading] = useState<boolean>(true);
     const [open_status, setOpenStatus] = useState<boolean>(false);
     const [open_status2, setOpenStatus2] = useState<boolean>(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalType, setModalType] = useState<"followers" | "followings" | null>(null);
     useEffect(() => {
         if (user) setLoading(false);
         console.log(user);
@@ -92,8 +95,19 @@ export default function Profile({ title }: titleProp) {
                                 animate={{ x: 0, opacity: 1 }}
                                 transition={{ delay: 0.4 }}
                             >
-                                <span className=" h-min m-1 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Followers: {user.follower_count}</span>
-                                <span className="m-1 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">Following: {user.following_count}</span>
+                                <span
+                                    onClick={() => { setModalType("followers"); setShowModal(true); }}
+                                    className="h-min m-1 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                                >
+                                    Followers: {user?.follower_count}
+                                </span>
+
+                                <span
+                                    onClick={() => { setModalType("followings"); setShowModal(true); }}
+                                    className="m-1 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                                >
+                                    Following: {user?.following_count}
+                                </span>
                             </motion.div>
                             <motion.div
                                 className="flex flex-col md:flex-row text-center justify-between  md:text-left max-w-xl flex-1"
@@ -121,9 +135,10 @@ export default function Profile({ title }: titleProp) {
                     onClick={() => setOpenStatus2(true)}
                 ><span className="inline-flex justify-center items-center text-center  ">Publish New &nbsp;<FaPencilAlt /></span></button>
             </div>
-            <ShowAllPosts />
+            {user && <ShowAllPosts post_user={user} />}
             <UpdateProfileModal open_status={open_status} onClose={onClose} />
-            <CreatePostModal open_status={open_status2} onClose={onClose2} />
+            <CreatePostModal open_status={open_status2} onClose={onClose2} post={null} />
+            {<CountModal onClose={() => { setShowModal(false) }} showModal={showModal} modalType={modalType} postuser={user} />}
         </>
     );
 }

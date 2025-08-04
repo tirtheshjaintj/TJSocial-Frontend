@@ -79,7 +79,7 @@ export default function AppNavbar() {
 
             <div className="relative">
                 <div
-                    tabIndex={0}
+                    tabIndex={1}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     onBlur={() => setDropdownOpen(false)}
                     style={{

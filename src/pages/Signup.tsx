@@ -9,6 +9,7 @@ import axiosInstance from "../config/axiosConfig";
 import { isValidEmail, isValidPhoneNumber } from "./Login";
 import type { titleProp } from "../types";
 import usePageSetup from "../hooks/usePageSetup";
+import GoogleBox from "../components/GoogleBox";
 
 export function isValidDOB(dobString: string) {
     const iso8601Regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -368,6 +369,7 @@ export default function Signup({ title }: titleProp) {
                     <span className="px-4 text-gray-500 text-sm">OR</span>
                     <hr className="flex-grow border-t border-gray-300" />
                 </div>
+                <GoogleBox setIsLoading={setIsLoading} />
                 <p className="text-sm  ">
                     <span className="text-gray-500 dark:text-gray-400">Already have an account?{` `}</span>
                     <Link to={`/login`} className="font-medium text-primary-600 hover:underline dark:text-primary-500">

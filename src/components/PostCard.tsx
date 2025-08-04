@@ -23,6 +23,8 @@ interface PostCardProps {
     onDelete: (postId: string) => void;
     innerRef?: (node: HTMLDivElement | null) => void;
     index: number;
+    post_user: any;
+    onEdit: () => void;
 }
 
 function stripHtml(html: string): string {
@@ -31,13 +33,12 @@ function stripHtml(html: string): string {
     return div.textContent || div.innerText || "";
 }
 
-function PostCard({ post, onDelete, innerRef, index }: PostCardProps) {
+function PostCard({ post, onDelete, innerRef, index, onEdit }: PostCardProps) {
     const [liked, setLiked] = useState(post.liked);
     const [bookmarked, setBookmarked] = useState(post.bookmarked || false);
     const [likeCount, setLikeCount] = useState(post.like_count);
     const [followed, setFollowed] = useState(post.followed || false);
     const user = useSelector((state: any) => state.user);
-
 
     const handleDelete = async () => {
         const result = await Swal.fire({
@@ -117,8 +118,11 @@ function PostCard({ post, onDelete, innerRef, index }: PostCardProps) {
                             <h3 className="text-base font-medium dark:text-white">
                                 {user._id === post.user_id._id ? user.name : post.user_id.name}
                             </h3>
+
                         </Link>
-                        {user._id !== post.user_id._id && (
+                        <span className="rounded-lg bg-blue-600 p-1 text-xs">{post.post_type.toUpperCase()}</span>
+                        <span className="rounded-lg bg-blue-600 p-1 text-xs">{post.type.toUpperCase()}</span>
+                        {/* {user._id !== post.user_id._id && (
                             <button
                                 onClick={handleFollow}
                                 className={`text-xs font-medium px-2 py-1 rounded border ml-2 ${followed
@@ -128,7 +132,7 @@ function PostCard({ post, onDelete, innerRef, index }: PostCardProps) {
                             >
                                 {followed ? "Following" : "Follow"}
                             </button>
-                        )}
+                        )} */}
                     </div>
                     <Dropdown
                         label={
@@ -146,12 +150,12 @@ function PostCard({ post, onDelete, innerRef, index }: PostCardProps) {
                         {
                             post.user_id._id === user._id && (
                                 <>
-                                    <DropdownItem icon={FaPencilAlt}>Edit</DropdownItem>
+                                    <DropdownItem icon={FaPencilAlt} onClick={onEdit}>Edit</DropdownItem>
                                     <DropdownItem icon={FaTrash} onClick={handleDelete}>Delete</DropdownItem>
                                 </>
                             )
                         }
-                        <DropdownItem icon={(bookmarked) ? FaBookmark : FaRegBookmark} onClick={handleBookmark}>Bookmark</DropdownItem>
+                        <DropdownItem icon={(bookmarked) ? FaBookmark : FaRegBookmark} onClick={handleBookmark}>{(bookmarked) ? "Bookmarked" : "Bookmark"}</DropdownItem>
                     </Dropdown>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-300 px-4 py-2 whitespace-nowrap overflow-hidden text-ellipsis">
